@@ -7,18 +7,18 @@ function($scope, TransSrv, MapSrv, ToolSrv){
     $scope.dataCount = 0;
     
     $scope._init_ = function(){
-        if(this.originalData.length === 0){
-            d3.csv('data/sample.csv', function(error, data){
-                if(error){
-                    console.log(error);
-                }
-                that.originalData = data;
-                TransSrv.originalData = data;
-                that._preprocess_();
-                console.log(that);
-            });
-        }
-        
+        // if(this.originalData.length === 0){
+        //     d3.csv('data/sample.csv', function(error, data){
+        //         if(error){
+        //             console.log(error);
+        //         }
+        //         that.originalData = data;
+        //         TransSrv.originalData = data;
+        //         that._preprocess_();
+        //         console.log(that);
+        //     });
+        // }
+        alert();
     }
     $scope.test = function(i){
         return i ++;
