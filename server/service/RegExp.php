@@ -118,6 +118,13 @@ class RegExp{
             return false;
         }
     }
+
+    static function PassengerState($str){
+        if($str === "1" || $str === "0"){
+            return true;
+        }
+        else return false;
+    }
 }
 
 ?>

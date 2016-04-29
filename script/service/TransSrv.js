@@ -1,10 +1,14 @@
 'use strict';
-app.service('TransSrv', [function(){
+app.service('TransSrv', ['$resource', 'baseURL',
+function($resource, baseURL){
     var that = this;
 
-    this.getD3CSV = function(){
-        
-        return that.data;
+    this.getVehicleCount = function(){
+        return $resource(baseURL+'/server/controller/router.php?type=vehicleCountPieChart').get();
+    }
+
+    this.getVehiclePassengerCount = function(){
+        return $resource(baseURL+'/server/controller/router.php?type=vehiclePassengerCountBarChart').get();
     }
 
 

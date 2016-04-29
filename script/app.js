@@ -6,7 +6,9 @@
 * Description
 */
 var app = angular.module('app', [
-    'ui.router']);
+    'ui.router', 'ngResource']);
+
+app.value('baseURL', 'http://localhost:63342/DataVisualization');
 
 app.config(function($stateProvider, $urlRouterProvider){
     $urlRouterProvider.otherwise("index");
