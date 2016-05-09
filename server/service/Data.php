@@ -1,118 +1,240 @@
 <?php
-    include 'RegExp.php';
-    class Data{
-        private static $instance;
 
-        //车牌号数量
-        public $vehicleType = array();
-        //每个车牌对应的记录数量
-        public $vehicleCount = array();
-        //每辆车载客数量
-        public $vehiclePassengerCount = array();
+class Data{
+    public static $instance;
+    private $vehiclePath = '../../data/vehicle/';
+    private $originDataCSV = '../../data/sample.csv';
+    private $specificV = '8.06814E+11';
+    private $vsIdArrJSON = '../../data/vsIdArr.json';
 
-        public static function getInstance(){
-            if (!(self::$instance instanceof self)) {
-                self::$instance = new self;
-            }
-            return self::$instance;
+
+    private $infoJSON = '../../data/info.json';
+    private $timeJSON = '../../data/time.json';
+    private $resultJSON = '../../data/result.json';
+
+
+    public $specificVData = array();
+    public $info = array();
+
+    public static function getInstance(){
+        if(!self::$instance){
+            self::$instance = new Data();
         }
+        return self::$instance;
+    }
 
-        public function test(){
+    public function start(){
+        //$this->setDataInfo();
+        //$this->setVehicleCsv();
+        $this->setVehicleInfo();
+        //$this->setTimeInfo();
+    }
 
+    private function setDataInfo(){
+        $file = fopen($this->originDataCSV, 'r');
+
+        $vsIdArr = array();
+        $gpsTimeArr = array('2010/9/12  0:00:00','2010/9/12  6:57:00');
+        $gpsSpeedStr = '';
+        $gpsLonStr = '';
+        $gpsLatStr = '';
+        $passengerStateArr = array('0', '1');
+        $gpsDirectStr = '';
+
+        while($data = fgetcsv($file)){
+            if($data[2] !== 'VehicleSimID' && !in_array($data[2], $vsIdArr)){
+                array_push($vsIdArr, $data[2]);
+            }
         }
-        public function getData($type){
-            $resultFile1 = null;
-            $resultFile2 = null;
-            if($type === 'vehicleCountPieChart'){
-                $resultFile1 = '../../data/vehicleCountPieChart.csv';
-                $resultFile2 = 'data/vehicleCountPieChart.csv';
-            }
-            else if($type === 'vehiclePassengerCountBarChart'){
-                $resultFile1 = '../../data/vehiclePassengerCountBarChart.csv';
-                $resultFile2 = 'data/vehiclePassengerCountBarChart.csv';
-            }
-            else{}
-            if(!file_exists($resultFile1)){
-                $this->getOriginData();
-            }
+        fclose($file);
+//        $result = array(
+//            'VehicleSimID'  => $vsIdArr,
+//            'GPSTime'       => $gpsTimeArr,
+//            'GPSSpeed'      => $gpsSpeedStr,
+//            'GPSLongitude'  => $gpsLonStr,
+//            'GPSLatitude'   => $gpsLatStr,
+//            'PassengerState'=> $passengerStateArr,
+//            'GPSDirect'     => $gpsDirectStr
+//        );
 
-            return $resultFile2;
+        $result = array(
+            'name' => 'data',
+            'children' => array(
+                array(
+                    'name' => 'VehicleSimID',
+                    'children' => array(array('name' => '('.$vsIdArr[0].', '.$vsIdArr[1].', ...) (49)'))
+                ),
+                array(
+                    'name' => 'GPSTime',
+                    'children'=> array(array('name' => '('.$gpsTimeArr[0].'  ... '.$gpsTimeArr[1].')'))
+                ),
+                array(
+                    'name' => 'GPSSpeed',
+                    'children'=> null
+                ),
+                array(
+                    'name' => 'GPSLongitude',
+                    'children'=> null
+                ),
+                array(
+                    'name' => 'GPSLatitude',
+                    'children'=> null
+                ),
+                array(
+                    'name' => 'PassengerState',
+                    'children'=> array(array('name' => '('.$passengerStateArr[0].', '.$passengerStateArr[1].')'))
+                ),
+                array(
+                    'name' => 'GPSDirect',
+                    'children'=> null
+                ),
+                array(
+                    'name' => 'CreateDate',
+                    'children' => null
+                )
+            )
+        );
 
-        }
-        private function getOriginData(){
-            $file = fopen("../../data/sample.csv", "r");
+        $tmpArrTarget = fopen($this->vsIdArrJSON, 'w');
+        fwrite($tmpArrTarget, json_encode($vsIdArr));
+        fclose($tmpArrTarget);
+
+        $target = fopen($this->infoJSON, 'w');
+        fwrite($target, json_encode($result));
+        fclose($target);
+    }
+
+    private function setVehicleCsv(){
+        $vsIdArr = json_decode(file_get_contents($this->vsIdArrJSON));
+
+        foreach($vsIdArr as $value){
+            $resArr = array();
+            $file = fopen($this->originDataCSV, 'r');
             while($data = fgetcsv($file)){
-                if($this->preProcessAtOneLine($data)){
-                    $this->getAllVehicle($data);
-                    $this->getVehicleCount($data);
-                    $this->getVehiclePassengerCount($data);
+                if($data[2] === $value || $data[2] === 'VehicleSimID'){
+                    array_push($resArr, $data);
                 }
             }
             fclose($file);
 
-            $this->setVehicleCountCsv('../../data/vehicleCountPieChart.csv');
-            $this->setVehiclePassengerCountCsv('../../data/vehiclePassengerCountBarChart.csv');
+            $target = fopen($this->vehiclePath.$value.'.csv', 'w');
 
-        }
-
-        private function preProcessAtOneLine($data){
-            //Deal with illegal vehicle id
-            if($data[2] != 'VehicleSimID'){
-                return RegExp::VehicleSimID($data[2]);
-            }
-            if($data[8] != 'PassengerState'){
-                return RegExp::PassengerState($data[8]);
-            }
-        }
-
-
-
-
-
-
-
-        private function getAllVehicle($data){
-            if(!in_array($data[2], $this->vehicleType) && $data[2] != "VehicleSimID"){
-                array_push($this->vehicleType, $data[2]);
-            }
-        }
-        private function getVehiclePassengerCount($data){
-            if(isset($this->vehicleCount[$data[2]])){
-                if($data[8] === "1"){
-                    $this->vehiclePassengerCount[$data[2]] += 1;
+            foreach($resArr as $item){
+                $count = 0;
+                foreach($item as $subItem){
+                    if($count < 10){
+                        fwrite($target, $subItem.',');
+                    }
+                    else{
+                        fwrite($target, $subItem."\n");
+                    }
+                    $count ++;
                 }
+
             }
-            else{
-                $this->vehiclePassengerCount[$data[2]] = 0;
-            }
-        }
-        private function getVehicleCount($data){
-            if(isset($this->vehicleCount[$data[2]])){
-                $this->vehicleCount[$data[2]] += 1;
-            }
-            else{
-                $this->vehicleCount[$data[2]] = 0;
-            }
+            fclose($target);
         }
 
-        //csv: vehicleId,count
-        private function setVehicleCountCsv($resultFile){
-            $file = fopen($resultFile, 'w');
-            fwrite($file, "vehicleId,count\n");
-            foreach($this->vehicleCount as $key => $value){
-                fwrite($file, $key.','.$value."\n");
-            }
-            fclose($file);
-        }
-
-        //csv: vehicleId, time, passengerCount
-        private function setVehiclePassengerCountCsv($resultFile){
-            $file = fopen($resultFile, 'w');
-            fwrite($file, "vehicleId,passengerCount\n");
-            foreach($this->vehiclePassengerCount as $key => $value){
-                fwrite($file, $key.','.$value."\n");
-            }
-            fclose($file);
-        }
 
     }
+
+    private function setVehicleInfo(){
+        $vsIdArr = json_decode(file_get_contents($this->vsIdArrJSON));
+
+        $resultArr = array();
+
+        foreach($vsIdArr as $value){
+
+            $vCount = 0;
+            $pCount = 0;
+            $larLon = 0;
+            $larLat = 0;
+            $smaLon = 180;
+            $smaLat = 90;
+
+            $file = fopen($this->vehiclePath.$value.'.csv', 'r');
+            $flag = false;
+            $tmpData = '';
+            while($data = fgetcsv($file)){
+                if(!$flag){
+                    $flag = true;
+                }
+                else{
+                    if($tmpData !== ''){
+                        if($tmpData[8] === '0' && $data[8] === '1'){
+                            $pCount ++;
+                        }
+                    }
+                    else{
+                        if($data[8] === '1'){
+                            $pCount ++;
+                        }
+                    }
+                    $tmpData = $data;
+
+                    $vCount ++;
+
+                    if($larLon < (double)$data[4]){
+                        $larLon = (double)$data[4];
+                    }
+                    if($larLat < (double)$data[5]){
+                        $larLat = (double)$data[5];
+                    }
+                    if(($data[5] !== '0') && ($data[4] !== '0')){
+                        if($smaLon > (double)$data[4]){
+                            $smaLon = (double)$data[4];
+                        }
+                        if($smaLat > (double)$data[5]){
+                            $smaLat = (double)$data[5];
+                        }
+                    }
+
+                }
+            }
+
+
+
+            array_push($resultArr, array(
+                'id' => $value,
+                'vCount' => $vCount,
+                'pCount' => $pCount,
+                'larLon' => $larLon,
+                'larLat' => $larLat,
+                'smaLon' => $smaLon,
+                'smaLat' => $smaLat
+            ));
+
+        }
+
+        $target = fopen($this->resultJSON, 'w');
+        fwrite($target, json_encode($resultArr));
+        fclose($target);
+    }
+
+    private function setTimeInfo(){
+        $file = fopen($this->originDataCSV, 'r');
+
+        $gpsArr = array();
+        $createArr = array();
+
+        while($data = fgetcsv($file)){
+            if(!in_array($data[3],$gpsArr)){
+                array_push($gpsArr, $data[3]);
+            }
+            if(!in_array($data[10],$createArr)){
+                array_push($createArr, $data[10]);
+            }
+
+        }
+        fclose($file);
+
+        $resArr = array(
+            'GPSTime' => $gpsArr,
+            'CreateTime' => $createArr
+        );
+        $target = fopen($this->timeJSON, 'w');
+        fwrite($target, json_encode($resArr));
+        fclose($target);
+    }
+
+}

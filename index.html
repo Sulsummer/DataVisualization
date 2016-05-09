@@ -2,20 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DataVisualization</title>
+    <title>基于前端的出租车上下客热点数据可视化分析</title>
     <link rel="stylesheet" href="style/style.css">
-    <link rel="stylesheet" href="style/mystyle.css">
     <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <link rel="stylesheet" href="vendor/transition/css/transitions.css">
+    <link rel="stylesheet" href="vendor/dialog/css/custombox.min.css">
+    <link rel="stylesheet" href="vendor/table/styles.css">
+    <link rel="stylesheet" href="vendor/table_zebra/css/style.css">
+
+    <link rel="stylesheet" href="style/mystyle.css">
 </head>
 <body ng-app="app">
-    <nav class="my-nav border-shadow">
-        <h3>DataVisualization</h3>
-        <ul>
-            <li class="item1">Intro</li>
-            <li class="item2">Start</li>
-        </ul>
+    <nav class="my-nav border-shadow" ng-controller="navCtrl">
+        <div class="row">
+            <h4>基于前端的出租车上下客热点数据可视化分析</h4>
+            <ul>
+                <li class="item1 intro" ng-click="intro()">项目介绍</li>
+            </ul>
+        </div>
     </nav>
     <div ui-view></div>
+    <div class="intro-box" ng-controller="introBoxCtrl">
+        <div class="title"><h3>title</h3></div>
+        <div class="content">
+            <div class="item item1">1</div>
+            <div class="item item2">2</div>
+            <div class="item item3">3</div>
+        </div>
+        <div class="control">
+            <button class="prev" ng-click="prev()">prev</button>
+            <button class="next" ng-click="next()">next</button>
+        </div>
+    </div>
 </body>
 </html>
 <script src="vendor/jquery/dist/jquery.min.js"></script>
@@ -24,13 +42,19 @@
 <script src="vendor/angular/angular.min.js"></script>
 <script src="vendor/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script src="vendor/angular-resource/angular-resource.js"></script>
-<!-- <script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
+<script src="http://cache.amap.com/lbs/static/es5.min.js"></script>
 <script src="http://webapi.amap.com/maps?v=1.3&key=0239ebeb2108f46af8d44333ad99ebb4"></script>
- -->
+<script src="vendor/transition/js/animateTransition.min.js"></script>
+<script src="vendor/dialog/js/custombox.min.js"></script> 
+
 
 
 <script src="script/app.js"></script>
 <script src="script/service/TransSrv.js"></script>
 <script src="script/service/MapSrv.js"></script>
 <script src="script/service/ToolSrv.js"></script>
+<script src="script/controller/navCtrl.js"></script>
+<script src="script/controller/introBoxCtrl.js"></script>
 <script src="script/controller/mainCtrl.js"></script>
+<script src="script/controller/dataShowCtrl.js"></script>
+<script src="script/controller/mapCtrl.js"></script>

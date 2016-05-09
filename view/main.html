@@ -1,22 +1,116 @@
-<div ng-controller="mainCtrl">
-    <section class="vehicle-count-pie-chart-area">
-        <figure>
-            <figcaption>
-                pie chart
+<div ng-controller="mainCtrl" class="container">
+    <div class="intro-area">
+        <figure class="row card">
+            <figcaption class="margin-fix">
+                <span><img src="pic/icon/list.png" class="icon"></span>流程介绍
             </figcaption>
-            <div class="pie-chart">
+            <p class="margin-fix">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa vitae repellat sed vero tempora alias, eligendi provident est beatae maiores earum nisi perferendis, commodi veritatis adipisci temporibus deserunt officiis! Saepe!
+            </p>
+            <p class="margin-fix">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo dolore doloremque fugiat corporis nisi. Quis ex, maxime architecto tempora reprehenderit delectus soluta incidunt, perspiciatis animi repellat excepturi provident officia, doloremque?
+            </p>
+        </figure>
+    </div>
+    <section class="info-tree-area">
+        <figure class="row card">
+            <figcaption class="margin-fix">
+                <span><img src="pic/icon/radio-active.png" class="icon"></span>数据介绍
+            </figcaption>
+            <div class="tree-chart">             
+            </div>
+            <p class="margin-fix">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reprehenderit, porro? Repellat enim similique illum nobis nulla labore exercitationem in laborum autem cum, fuga, modi itaque! Obcaecati reiciendis provident nobis placeat!</p>
+        </figure>
+    </section>
+    <section class="detail-area">
+        <figure class="row  card">
+            <figcaption class="margin-fix">
+                <span><img src="pic/icon/eye-open.png" class="icon"></span>数据统计一览
+            </figcaption>
+            <section class="pie-area">
+                <p class="margin-fix">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex velit sunt pariatur sequi nihil aliquam maxime blanditiis architecto quod maiores voluptates nostrum eos cum commodi odio, eligendi, impedit, ea tempore.</p>
+                <p class="margin-fix">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex velit sunt pariatur sequi nihil aliquam maxime blanditiis architecto quod maiores voluptates nostrum eos cum commodi odio, eligendi, impedit, ea tempore.</p>
+                <div class="pie-chart">
+                
+                </div>
+                <div class="pie-table">
+                    <div id="fdw-pricing-table">
+                        <div class="plan plan1">
+                            <div class="header">ID</div>
+                            <div class="price">{{data.id}}</div>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>       
+                            <a class="signup" ng-click="veiwData(data.id)">详情</a>
+                        </div>
+                        <div class="plan plan2">
+                            <div class="header">记录数</div>
+                            <div class="price">{{data.vCount}}</div> 
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br> 
+                            <a class="signup">比较</a>            
+                        </div>
+                        <div class="plan plan3">
+                            <div class="header">载客数</div>
+                            <div class="price">{{data.pCount}}</div>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br> 
+                            <a class="signup">比较</a>        
+                        </div>
+                        <div class="plan plan4">
+                            <div class="header">时间</div>
+                            <div class="price">{{data.time}}</div>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br> 
+                            <a class="signup">详情</a>        
+                        </div> 
+                        <div class="plan plan5">
+                            <div class="header">载客范围</div>
+                            <ul>
+                                <li>{{data.larLon}}</li>
+                                <li>{{data.larLat}}</li>
+                                <li>{{data.smaLon}}</li>
+                                <li>{{data.smaLat}}</li>
+                            </ul>
+                            <a class="signup" ng-click="getInfoMap(data)">详情</a>        
+                        </div> 
+                    </div>
+                </div>
+            </section>
+            <div class="hr row">
+                <hr class="margin-fix">
+            </div>
+            <section class="bar-area">
+                <p class="margin-fix">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nam consectetur voluptatibus illum rerum non similique illo ipsa recusandae odit, voluptatem aliquam fugit dolorum repudiandae quia aut. Qui consectetur, harum ratione.</p>
+                <div class="bar-chart-count">
+                    
+                </div>
+                <p class="margin-fix">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel dolor sed dignissimos reiciendis itaque culpa sapiente perferendis accusamus ut, fugiat et, sunt quos, amet maiores adipisci corporis inventore iste numquam.</p>
+                <div class="bar-chart-passenger">
+                    
+                </div>
+            </section>
+        </figure>
+    </section>
+    <section class="info-map-area">
+         <figure class="row card">
+            <figcaption class="margin-fix">
+                <span><img src="pic/icon/location.png" class="icon"></span>活动范围地图
+            </figcaption>
+            <div class="margin-fix" id="info-map">
                 
             </div>
         </figure>
     </section>
-    <section class="vehicle-passenger-count-bar-chart-area">
-        <figure>
-            <figcaption>
-                bar chart
-            </figcaption>
-            <div class="bar-chart">
-                
-            </div>
-        </figure>
-    </section
 </div>

@@ -1,0 +1,27 @@
+<div class="container" ng-controller="dataShowCtrl">
+    <div class="row card">
+        <table class="zebra">
+        <caption>{{id}}</caption>
+            <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>CompanyID</td>
+                    <td>VehicleSimID</td>
+                    <td>GPSTime</td>
+                    <td>GPSLongitude</td>
+                    <td>GPSLatitude</td>
+                    <td>GPSSpeed</td>
+                    <td>GPSDirection</td>
+                    <td>PassengerState</td>
+                    <td>ReadFlag</td>
+                    <td>CreateDate</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in data">
+                    <td ng-repeat="(key, value) in item">{{value}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

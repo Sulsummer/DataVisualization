@@ -15,6 +15,14 @@ app.config(function($stateProvider, $urlRouterProvider){
     $stateProvider
     .state('index', {
         url:'/index',
-        templateUrl : 'view/main.html'
+        templateUrl: 'view/main.html'
+    })
+    .state('data', {
+        url: '/data',
+        templateUrl: 'view/dataShow.html'
+    })
+    .state('map', {
+        url: '/map',
+        templateUrl: 'view/map.html'
     });
 });

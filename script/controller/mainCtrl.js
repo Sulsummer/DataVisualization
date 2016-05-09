@@ -1,91 +1,106 @@
 'use strict';
 
-app.controller('mainCtrl', ['$scope', '$http', 'TransSrv', 'MapSrv', 'ToolSrv',
-function($scope, $http, TransSrv, MapSrv, ToolSrv){
+app.controller('mainCtrl', ['$rootScope', '$scope', '$http', '$timeout', '$document', '$state', 'TransSrv', 'MapSrv', 'ToolSrv',
+function($rootScope, $scope, $http, $timeout, $document, $state, TransSrv, MapSrv, ToolSrv){
     var that = $scope;
     
     $scope._init_ = function(){
-        //this.test();
-        this._getVehicleCount_();
-        this._getVehiclePassengerCount_();
+        TransSrv.start();
+        $timeout(function(){
+            that._infoTree_();
+            that._vehicleCountPieChart_();
+            that._vehicleCountBarChart_();
+            that._vehiclePassengerBarChart_();
+            that.getInfoMap();
+
+            that._run_();
+        }, 3000);
+        
     }
 
     $scope.test = function(){
-        d3.csv('data/sample.csv', function(error, data){
-            console.log(data);
-        })
+
     }
 
-    $scope._getVehicleCount_ = function(){
-        TransSrv.getVehicleCount().$promise
-        .then(function(success){
-            that.vehicleCountUrl = success.url;
-            d3.csv(that.vehicleCountUrl, function(error, data) {
-                if(error){
-                    console.log(error);
+    $scope._goDown_ = function(){
+        
+    }
+
+    $scope._run_ = function(){
+        $('.plan').each(function(){
+            var _this_ = $(this);
+            _this_.on('mouseover', function(){
+                if(!_this_.is(':animated')){
+                    if(_this_.css('top') !== -20){
+                         _this_.animate({
+                            marginTop: '-20px'
+                        }, 100, 'linear');
+                    }
                 }
-                that.vehicleCount = data;
-                that._mergeLightVehicleCount_();
-                that._renderVehicleCountPieChart_();
-             });
+            });
+            _this_.on('mouseout', function(){ 
+                if(!_this_.is(':animated')){
+                    if(_this_.css('top') !== 0){
+                        _this_.animate({
+                            marginTop: '0'
+                        }, 100, 'linear');
+                    }
+                }    
+            });
         });
     }
-     
-    $scope._renderVehicleCountPieChart_ = function(){
-        ToolSrv.vehicleCountPieChart(that.vehicleCount, $('.pie-chart'), '.pie-chart')
+
+    $scope.veiwData = function(id){
+        $rootScope.data = id;
+        $state.go('data');
+    }
+
+    $document.bind('click', function(e){
+        that.$apply(function(){
+            if((e.target.tagName === 'path') && (ToolSrv.data !== undefined)){
+                that.data = ToolSrv.data;
+                that.data.time = '[]';
+            }
+        });
+    });
+
+    $scope._infoTree_ = function(){
+        ToolSrv.infoTreeChart(TransSrv.info, $('.tree-chart'), '.tree-chart');
+    } 
+    $scope._vehicleCountPieChart_ = function(){
+        ToolSrv.vehicleCountPieChart(TransSrv.vehicleInfo, $('.pie-chart'), '.pie-chart')
                 .renderSvg()
                 .renderBody()
                 .renderPie();
     }
-    $scope._mergeLightVehicleCount_ = function(){
-        var vehicleCount = this.vehicleCount,
-            otherCount = 0,
-            newArr = [];
-        for(var i = 0; i < vehicleCount.length; i ++){
-            if(vehicleCount[i].count - 0 >= 18000){
-                newArr.push({
-                    vehicleId: vehicleCount[i].vehicleId,
-                    count: vehicleCount[i].count - 0
-                });
-                
-            }
-            else{
-                otherCount += (vehicleCount[i].count-0);
-            }  
-        }
-        newArr.push({
-            vehicleId: 'other',
-            count: otherCount
-        });
-        this.vehicleCount = newArr;
-    }
-
-
-    $scope._getVehiclePassengerCount_ = function(){
-        TransSrv.getVehiclePassengerCount().$promise
-        .then(function(success){
-            that.vehiclePassengerCountUrl = success.url;
-            d3.csv(that.vehiclePassengerCountUrl, function(error, data) {
-                if(error){
-                    console.log(error);
-                }
-                that.vehiclePassengerCount = data;
-                that._renderVehiclePassengerCountBarChart_();
-             });
-        });
-    }
-    $scope._renderVehiclePassengerCountBarChart_ = function(){
-        ToolSrv.vehiclePassengerCountBarChart(that.vehiclePassengerCount, $('.bar-chart'), '.bar-chart')
+    $scope._vehicleCountBarChart_ = function(){
+        ToolSrv.vehicleCountBarChart(TransSrv.vehicleInfo, $('.bar-chart-count'), '.bar-chart-count')
                 .renderSvg()
                 .renderBody()
                 .renderAxis()
-                .renderBar();
+                .renderBar()
+                .renderLabel();
+    }
+    $scope._vehiclePassengerBarChart_ = function(){
+        ToolSrv.vehiclePassengerBarChart(TransSrv.vehicleInfo, $('.bar-chart-passenger'), '.bar-chart-passenger')
+                .renderSvg()
+                .renderBody()
+                .renderAxis()
+                .renderBar()
+                .renderLabel();
     }
 
 
+    $scope.intro = function(){
+
+        alert();
+    }
+
+    $scope.getInfoMap = function(pos){
+        MapSrv.getInfoMap('info-map', pos);
+    }
+
     $scope._init_();
-    //console.log($scope.originalData);
-    //$scope._setMap_('map', [116.39,39.9]);
 
 
 
